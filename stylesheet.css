@@ -1,5 +1,22 @@
 .hay{
-    display: grid;
-    justify-content: baseline;
+    display: flex;
+    justify-content: center;
+    padding-left: 20%;
     grid-template-rows: 3;
+}
+*{
+    background-image: url("GYmCpdZasAE6UKF.jpg");
+}
+.real_div{ 
+    background: greenyellow;
+    padding-top: 20px;
+}
+button{
+    margin-left: 50%;
+    padding-top: 100px;
+    margin-bottom: 50%;
+    border: 100px;
+    font-size: 90px;
+    width: auto;
+    height: auto;
 }
