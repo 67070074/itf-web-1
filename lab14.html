@@ -3,55 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My Melody's Phone Book</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="parent">
+    <div class="container">
+        <h1>Taz Tupsuri 67070074's Phone Book</h1>
 
+        <div class="avatar-wrapper">
+            <div class="avatar" id="avatar"></div>
+            <div class="notification">1</div>
+        </div>
+
+        <div class="input-row">
+            <label for="new-username">Set the Username</label>
+            <input type="text" id="new-username" placeholder="Enter Username">
+            <button class="button" onclick="updateProfile()">SET</button>
+        </div>
+        <div class="input-row">
+            <label for="avatar-url">Set the profile image URL</label>
+            <input type="url" id="avatar-url" placeholder="Enter Image URL">
+            <button class="button" onclick="updateAvatar()">SET</button>
+        </div>
+
+        <h3>Phone Number List</h3>
+
+        <div class="input-group">
+            <input type="text" id="name" placeholder="Name">
+            <input type="tel" id="phone" placeholder="Tel">
+            <button class="button" onclick="addContact()">ADD</button>
+            <button class="button" onclick="exportContacts()">EXPORT</button>
+        </div>
+
+        <table id="contact-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
     </div>
-    <h1 id="username">Username</h1>
-    <div id="profile" style="position: relative; height: 300px; width: 300px; background-image: url(https://th.bing.com/th/id/OIP.VTBzGQySOYLDke_xg2OfEQHaFj?rs=1&pid=ImgDetMain);background-position: center; border-radius: 100%;">
-        <div style="position: absolute; bottom: 15px; right: 15px; height: 50px; width: 50px; background-color: red; border-radius: 50%; display: flex; justify-content: center;align-items: center;color: white;"><p>1</p></div>
-    </div>
-    <label for="">user name</label>
-    <input type="text" placeholder="Enter" id="input"><button onclick= "setUsername()">Set</button>
-    <label for="">set profile</label>
-    <input type="text" placeholder="Enter" id="input"><button onclick= "setImage()">Set</button>
-    <label for="">set element</label>
-    <input type="text" placeholder="Enter" id="input"><button onclick= "addParagraph()">Set</button>
+
     <script>
-        const username = document.getElementById("username");
-        const input = document.getElementById("input");
-        const profile = document.getElementById("profile");
+        let contacts = [];
+        let contactId = 1;
 
-        username.textContent = "Hello";
-        console.log(input.value);
+        const updateProfile = () => {
+            const username = document.getElementById('new-username').value;
+            if (username) {
+                document.querySelector('h1').textContent = username + "'s Phone Book";
+            }
+        };
 
-        function setUsername(){
-            console.log(input.value);
-            username.textContent = input.value;
-            input.value = "";
+        const updateAvatar = () => {
+            const avatarUrl = document.getElementById('avatar-url').value;
+            if (avatarUrl) {
+                document.getElementById('avatar').style.backgroundImage = `url(${avatarUrl})`;
+            }
         };
-        function setImage(){
-            profile.style.backgroundImage = "url(" + input.value +")";
+
+        const addContact = () => {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            if (name && phone) {
+                contacts.push({ id: contactId++, name, phone });
+                renderContacts();
+                document.getElementById('name').value = '';
+                document.getElementById('phone').value = '';
+            }
         };
-        function addParagraph(){
-            const a = document.createElement("p");
-            a.textContent = "New paragraph"
-            const parent = document.getElementById("parent");
-            parent.appendChild(a);
+
+        const renderContacts = () => {
+            const contactTable = document.querySelector('#contact-table tbody');
+            contactTable.innerHTML = '';
+            contacts.forEach((contact, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${index + 1}</td><td>${contact.name}</td><td>${contact.phone}</td>`;
+                contactTable.appendChild(row);
+            });
         };
-        function saveCSV(){
-            const csvContent = phonenumber.map(row => row.join(",")).join("\n"); // Convert array to CSV string
-                const blob = new Blob([csvContent], {type: "text/csv;charset=utf-8;"});
-                const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", "data.csv");
-                link.style.visibility = "hidden";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+
+        const exportContacts = () => {
+            const csvContent = 'data:text/csv;charset=utf-8,No.,Name,Phone Number\n' +
+                contacts.map((contact, index) => `${index + 1},${contact.name},${contact.phone}`).join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'contacts.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         };
     </script>
 </body>
